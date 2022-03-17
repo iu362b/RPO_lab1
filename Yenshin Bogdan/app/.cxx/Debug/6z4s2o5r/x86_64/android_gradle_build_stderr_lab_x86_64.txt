@@ -1,0 +1,1 @@
+ninja: error: '/home/b-da/Проекты/AndroidStudioProjects/lib/spdlog/build/x86_64/libspdlog.a', needed by '/home/b-da/Проекты/AndroidStudioProjects/Lab/app/build/intermediates/cxx/Debug/6z4s2o5r/obj/x86_64/liblab.so', missing and no known rule to make it

@@ -1,0 +1,1 @@
+ninja: Entering directory `/home/b-da/Проекты/AndroidStudioProjects/Lab/app/.cxx/Debug/6z4s2o5r/x86_64'

@@ -1,0 +1,7 @@
+Executable : /home/b-da/Android/Sdk/cmake/3.18.1/bin/ninja
+arguments : 
+-C
+/home/b-da/Проекты/AndroidStudioProjects/Lab/app/.cxx/Debug/6z4s2o5r/x86_64
+lab
+jvmArgs : 
+
