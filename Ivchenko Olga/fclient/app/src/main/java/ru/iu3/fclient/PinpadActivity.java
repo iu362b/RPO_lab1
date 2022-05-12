@@ -55,8 +55,6 @@ public class PinpadActivity extends AppCompatActivity {
             setResult(RESULT_OK, it);
             finish();
         });
-
-
     }
 
     public void keyClick(View v)
