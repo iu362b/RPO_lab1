@@ -21,10 +21,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.Filter;
 
-/**
- * Класс, в котором указываются настройки spring boot security
- * @author artem
- */
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -36,10 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     // Провайдер для аутентификации
     AuthenticationProvider provider;
 
-    /**
-     * Конструктор
-     * @param authenticationProvider - провайдер аутентификации - поиск в БД
-     */
+
     public SecurityConfiguration(final AuthenticationProvider authenticationProvider) {
         super();
         this.provider = authenticationProvider;
@@ -50,11 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(this.provider);
     }
 
-    /**
-     * Ещё одна дополнительная конфигурация. Указываем адресный путь, откуда будет вызываться авторизация
-     * @param web - параметр web
-     * @throws Exception - ошибка, требуется обязательно
-     */
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/auth/login");
@@ -69,11 +59,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin().disable().httpBasic().disable().logout().disable().cors();
     }
 
-    /**
-     * Метод - дополнительная фильтрация. Извлекать можно только из определённого диапазона адресов
-     * @return - фильтр
-     * @throws Exception - ошибка, которая извлекается
-     */
+
     @Bean
     AuthenticationFilter authenticationFilter() throws Exception {
         final AuthenticationFilter filter = new AuthenticationFilter(PROTECTED_URLS);
@@ -82,10 +68,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
-    /**
-     * Метод, возвращающий статус ошибки - 403
-     * @return - HttpStatus
-     */
+
     @Bean
     AuthenticationEntryPoint forbiddenEntryPoint() {
         return new HttpStatusEntryPoint(HttpStatus.FORBIDDEN);

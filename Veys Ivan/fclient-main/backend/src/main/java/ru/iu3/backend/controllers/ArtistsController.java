@@ -18,10 +18,7 @@ import ru.iu3.backend.tools.DataValidationException;
 
 import java.util.*;
 
-/**
- * Метод, который отражает логику работы таблицы артистов
- * @author artem
- */
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/v1")
@@ -33,10 +30,7 @@ public class ArtistsController {
     @Autowired
     CountryRepository countryRepository;
 
-    /**
-     * Метод, который возвращает список артистов для данной БД
-     * @return - список артистов, который представлен в JSON
-     */
+
     @GetMapping("/artists")
     public Page<Artists> getAllArtists(@RequestParam("page") int page, @RequestParam("limit") int limit) {
         return artistsRepository.findAll(PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, "name")));
@@ -49,11 +43,7 @@ public class ArtistsController {
         return ResponseEntity.ok(artists);
     }
 
-    /**
-     * Метод, который возвращает по значению артиста список картин, которые он создал
-     * @param artistID - ID артиста (передаётся через JSON)
-     * @return - ок, если информация была найдена. Выведет пустой список, если ничего не было найдено
-     */
+
     @GetMapping("/artists/{id}/paintings")
     public ResponseEntity<Object> getMuseumsFromArtist(@PathVariable(value = "id") Long artistID) {
         Optional<Artists> optionalArtists = artistsRepository.findById(artistID);
@@ -65,13 +55,7 @@ public class ArtistsController {
         return ResponseEntity.ok(new ArrayList<Museum>());
     }
 
-    /**
-     * Метод, который добавляет артистов в базу данных
-     * @param artists - Структура данных, которая поступает из PostMan в виде JSON-файла
-     *                где распарсивается и представлется в нужном для нас виде
-     * @return - Статус. 404, если ок. В противном случае, будет выдавать ошибку
-     * @throws Exception - выброс исключения. Обязательное требование
-     */
+
     @PostMapping("/artists")
     public ResponseEntity<Object> createArtist(@RequestBody Artists artists) throws Exception {
         try {
@@ -93,12 +77,7 @@ public class ArtistsController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    /**
-     * Метод, который обновляет данные для артистов
-     * @param artistsID - ID артиста, по которому будет осуществляться собственно поиск
-     * @param artistDetails - детальная информация по артистам
-     * @return - возвращает заголовок. Если всё ок, то 200. Иначе будет ошибка
-     */
+
     @PutMapping("/artists/{id}")
     public ResponseEntity<Artists> updateArtist(@PathVariable(value = "id") Long artistsID,
                                                 @RequestBody Artists artistDetails) {
@@ -108,7 +87,7 @@ public class ArtistsController {
         if (cc.isPresent()) {
             artist = cc.get();
 
-            // Обновляем информацию по артистам
+            // Обновляем информацию
             artist.name = artistDetails.name;
             artist.age = artistDetails.age;
             artist.countryid = artistDetails.countryid;
@@ -120,17 +99,13 @@ public class ArtistsController {
         }
     }
 
-    /**
-     * Метод, который удаляет артистов
-     * @param artistID - ID артиста, который будет удалён из базы данных
-     * @return - вернёт 200, если всё было ок
-     */
+
     @DeleteMapping("/artists/{id}")
     public ResponseEntity<Object> deleteArtist(@PathVariable(value = "id") Long artistID) {
         Optional<Artists> artists = artistsRepository.findById(artistID);
         Map<String, Boolean> resp = new HashMap<>();
 
-        // Возвратит true, если объект существует (не пустой)
+        // Возвратит true, если объект существует
         if (artists.isPresent()) {
             artistsRepository.delete(artists.get());
             resp.put("deleted", Boolean.TRUE);

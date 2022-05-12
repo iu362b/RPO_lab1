@@ -16,22 +16,15 @@ import ru.iu3.backend.tools.DataValidationException;
 
 import java.util.*;
 
-/**
- * Класс - контроллер музея
- * @author artem
- */
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/v1")
 public class MuseumController {
-    // Репозиторий нашего музея
+
     @Autowired
     MuseumRepository museumRepository;
 
-    /**
-     * Метод, который выдаёт список музеев
-     * @return - список музеев, представленный в формате JSON
-     */
+
     @GetMapping("/museums")
     public Page<Museum> getAllMuseums(@RequestParam("page") int page, @RequestParam("limit") int limit) {
         return museumRepository.findAll(PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, "name")));
@@ -46,11 +39,7 @@ public class MuseumController {
         return ResponseEntity.ok(museum);
     }
 
-    /**
-     * Метод, который осуществляет предоставление доступа к картине из вывода музея
-     * @param museumID - ID картины
-     * @return - блок картин, если таковы есть
-     */
+
     @GetMapping("/museums/{id}/paintings")
     public ResponseEntity<List<Painting>> getPaintingMuseums(@PathVariable(value = "id") Long museumID) {
         Optional<Museum> cc = museumRepository.findById(museumID);
@@ -61,16 +50,11 @@ public class MuseumController {
         return ResponseEntity.ok(new ArrayList<Painting>());
     }
 
-    /**
-     * Метод, который добавляет country в таблиц
-     * RequestBody - это наш экземпляр (через curl передаётся в виде JSON)
-     * @param museum - наш экземпляр класса museum
-     * @return - статус (ОК/НЕ ОК)
-     */
+
     @PostMapping("/museums")
     public ResponseEntity<Object> createMuseum(@RequestBody Museum museum) throws DataValidationException {
         try {
-            // Попытка сохранить что-либо в базу данных
+
             Museum newMusem = museumRepository.save(museum);
             return new ResponseEntity<Object>(newMusem, HttpStatus.OK);
         } catch (Exception exception) {
@@ -82,12 +66,7 @@ public class MuseumController {
         }
     }
 
-    /**
-     * Метод, который обновляет данные в таблице
-     * @param museumID - указываем id по которому будем обновлять данные
-     * @param museumDetails - сводки по Museum
-     * @return - ОК/НЕ ОК
-     */
+
     @PutMapping("/museums/{id}")
     public ResponseEntity<Museum> updateMuseum(@PathVariable(value = "id") Long museumID,
                                                @RequestBody Museum museumDetails) throws DataValidationException {
@@ -115,11 +94,7 @@ public class MuseumController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    /**
-     * Метод, который удаляет информацию из базы данных
-     * @param museumID - по какому ID-шнику удаляем информацию
-     * @return - возвращает true, если удалено успешно, false - в противном случае
-     */
+
     @DeleteMapping("/museums/{id}")
     public ResponseEntity<Object> deleteCountry(@PathVariable(value = "id") Long museumID) {
         Optional<Museum> museum = museumRepository.findById(museumID);

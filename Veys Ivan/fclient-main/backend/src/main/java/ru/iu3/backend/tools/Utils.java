@@ -6,10 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Класс - полезные дополнительные утилиты
- * @author artem
- */
+
 public class Utils {
     public static String ComputeHash(String pwd, String salt) {
         MessageDigest digest;

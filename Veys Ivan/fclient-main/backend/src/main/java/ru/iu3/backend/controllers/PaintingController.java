@@ -22,25 +22,19 @@ import java.time.DateTimeException;
 import java.util.*;
 import java.util.List;
 
-/**
- * Класс - контроллер картин
- * @author artem
- */
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/v1")
 public class PaintingController {
-    // По аналогии у нас будет два репозитория
+
     @Autowired
     PaintingRepository paintingRepository;
 
     @Autowired
     MuseumRepository museumRepository;
 
-    /**
-     * Метод, который возвращает список всех картин, которые есть в базе данных
-     * @return - список картин
-     */
+
     @GetMapping("/paintings")
     public Page<Painting> getAllPaintings(@RequestParam("page") int page, @RequestParam("limit") int limit) {
         return paintingRepository.findAll(PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, "name")));
@@ -55,11 +49,7 @@ public class PaintingController {
         return ResponseEntity.ok(painting);
     }
 
-    /**
-     * Метод, который добавляет картины в базу данных
-     * @param painting - картины
-     * @return - заголовок. Ок/не ок
-     */
+
     @PostMapping("/paintings")
     public ResponseEntity<Object> createPainting(@RequestBody Painting painting) throws DataValidationException {
         try {
@@ -74,12 +64,7 @@ public class PaintingController {
         }
     }
 
-    /**
-     * Метод, обновляющий данные по картинам
-     * @param id - ID картины
-     * @param paintingDetails - сведения по картинам
-     * @return - ОК/не ОК
-     */
+
     @PutMapping("/paintings/{id}")
     public ResponseEntity<Painting> updatePainting(@PathVariable(value = "id") Long id,
                                                    @RequestBody Painting paintingDetails) throws DataValidationException {
@@ -87,7 +72,7 @@ public class PaintingController {
             Painting painting = paintingRepository.findById(id)
                     .orElseThrow(() -> new DataValidationException("Музей не может быть обновлён"));
 
-            // Сведения о картинах
+
             painting.name = paintingDetails.name;
             painting.museumid = paintingDetails.museumid;
             painting.artistid = paintingDetails.artistid;
@@ -111,11 +96,7 @@ public class PaintingController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    /**
-     * Метод, который осуществляет удаление картины
-     * @param paintingID - ID картины
-     * @return - статус: удален/не удален
-     */
+
     @DeleteMapping("/paintings/{id}")
     public ResponseEntity<Object> deletePainting(@PathVariable(value = "id") Long paintingID) {
         Optional<Painting> cc = paintingRepository.findById(paintingID);

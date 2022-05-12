@@ -15,12 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Класс - контроллер авторизации. Он не привязан к какой-либо модели, поэтому пишем его отдельно
- * @author artem
- */
 
-// Эту аннотацию надо указать обязательно, поскольку в противном случае будет ошибка из-за политики одного источника
+
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/auth")
@@ -29,11 +26,7 @@ public class LoginController {
     @Autowired
     private UsersRepository usersRepository;
 
-    /**
-     * Метод, который осуществляет авторизацию (sign in) пользователя.
-     * @param credentials
-     * @return
-     */
+
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody Map<String, String> credentials) {
         // В качестве JSON записываем логин, пароль. Логин - admin, пароль - qwerty
@@ -53,7 +46,7 @@ public class LoginController {
                 // Высчитываем пароль (захешированный в одну сторону)
                 String hash2 = Utils.ComputeHash(pwd, salt);
 
-                // Если захешированный пароль из базы совпадает с просчитанным паролем, то формируем рандомный токен
+                // Если захешированный пароль из базы совпадает с просчитанным паролем, то формируем токен
                 if (hash1.toLowerCase().equals(hash2.toLowerCase())) {
                     String token = UUID.randomUUID().toString();
                     u2.token = token;
@@ -61,39 +54,35 @@ public class LoginController {
                     // Добавляем активность пользователя - текущее время
                     u2.activity = LocalDateTime.now();
 
-                    // Сохраняем информацию (save просто записывает, flush применяет все изменения)
+
                     Users u3 = usersRepository.saveAndFlush(u2);
                     return new ResponseEntity<Object>(u3, HttpStatus.OK);
                 }
             }
         }
 
-        // А если пользователь не нашёлся, то выбрасываем ошибку - пользователь не найден
+        // Если пользователь не нашёлся, то выбрасываем ошибку - пользователь не найден
         return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
     }
 
-    /**
-     * Метод, который осуществляет sign out - выход из системы
-     * @param token - токен, который должен идти в заголовке
-     * @return - Статус. Ок/не ок
-     */
+
     @GetMapping("/logout")
     public ResponseEntity logout(@RequestHeader(value = "Authorization", required = false) String token) {
-        // Вот здесь была ошибка в методичке. Она исправлена
+
         if (token != null && !token.isEmpty()) {
-            // Очищаем токен от всякого мусора
+
             token = StringUtils.removeStart(token, "Bearer").trim();
 
-            // Находим пользователя по токену, а не по логину, чтобы в JSON ничего не передавать
+
             Optional<Users> uu = usersRepository.findByToken(token);
             if (uu.isPresent()) {
-                // Пользователь найден -> можно разлогинить его на уровне базы данных
+
                 Users u = uu.get();
 
                 u.token = null;
                 usersRepository.save(u);
 
-                // Возвращаем статус - ОК
+
                 return new ResponseEntity(HttpStatus.OK);
             }
         }

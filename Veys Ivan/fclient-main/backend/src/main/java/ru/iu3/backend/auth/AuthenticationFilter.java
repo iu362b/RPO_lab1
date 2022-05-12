@@ -18,23 +18,14 @@ import java.util.Enumeration;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-/**
- * Класс, который осуществляет аутентификацию
- * @author artem
- */
+
 public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     // Конструктор
     AuthenticationFilter(final RequestMatcher requiresAuth) {
         super(requiresAuth);
     }
 
-    /**
-     * Данный метод вызывается каждый раз, когда хотим отправить запрос на авторизацию. Это другой уровень обслуживания
-     * Здесь мы осуществляем авторизацию. Если ок, то 200. Если не ок, то 401
-     * @param request - запрос
-     * @param response - ответ
-     * @return - попытку авторизоваться
-     */
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
@@ -48,20 +39,12 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
             token = StringUtils.removeStart(token,"Bearer").trim();
         }
 
-        // Моё предположение, что здесь нужно именно это, потому что идёт запрос с кренделями
+
         Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(request, token);
         return getAuthenticationManager().authenticate(requestAuthentication);
     }
 
-    /**
-     * TODO: закомментировать
-     * @param request
-     * @param response
-     * @param chain
-     * @param authResult
-     * @throws IOException
-     * @throws ServletException
-     */
+
     @Override
     protected void successfulAuthentication(final HttpServletRequest request, final HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
