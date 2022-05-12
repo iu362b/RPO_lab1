@@ -85,6 +85,7 @@ export default connect()(function Login() {
                         Entry
                     </button>
                 </div>
+
             </form>
         </div>
     );

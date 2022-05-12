@@ -1,12 +1,8 @@
 package ru.iu3.backend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.iu3.backend.models.Artists;
@@ -14,7 +10,6 @@ import ru.iu3.backend.models.Country;
 import ru.iu3.backend.models.Museum;
 import ru.iu3.backend.repositories.ArtistRepository;
 import ru.iu3.backend.repositories.CountryRepository;
-import ru.iu3.backend.tools.DataValidationException;
 
 import java.util.*;
 
@@ -22,7 +17,6 @@ import java.util.*;
  * Метод, который отражает логику работы таблицы артистов
  * @author artem
  */
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/v1")
 public class ArtistsController {
@@ -38,15 +32,8 @@ public class ArtistsController {
      * @return - список артистов, который представлен в JSON
      */
     @GetMapping("/artists")
-    public Page<Artists> getAllArtists(@RequestParam("page") int page, @RequestParam("limit") int limit) {
-        return artistsRepository.findAll(PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, "name")));
-    }
-
-    @GetMapping("/artists/{id}")
-    public ResponseEntity getArtist(@PathVariable(value = "id") Long artistId) throws DataValidationException {
-        Artists artists = artistsRepository.findById(artistId).
-                orElseThrow(() -> new DataValidationException("Художник с таким индексом не найден"));
-        return ResponseEntity.ok(artists);
+    public List getAllCountries() {
+        return artistsRepository.findAll();
     }
 
     /**
@@ -75,22 +62,28 @@ public class ArtistsController {
     @PostMapping("/artists")
     public ResponseEntity<Object> createArtist(@RequestBody Artists artists) throws Exception {
         try {
-            // Попытка сохранить что-либо в базу данных
-            Artists newArtists = artistsRepository.save(artists);
-            return new ResponseEntity<Object>(newArtists, HttpStatus.OK);
-        } catch (Exception exception) {
-            if (exception.getMessage().contains("artists.name_UNIQUE")) {
-                throw new DataValidationException("Эта страна уже есть в базе");
-            } else {
-                throw new DataValidationException("Неизвестная ошибка");
+            // Извлекаем самостоятельно страну из пришедших данных
+            Optional<Country> cc = countryRepository.findById(artists.countryid.id);
+            if (cc.isPresent()) {
+                artists.countryid = cc.get();
             }
-        }
-    }
+            // Формируем новый объект класса Artists и сохраняем его в репозиторий
+            Artists nc = artistsRepository.save(artists);
+            return new ResponseEntity<Object>(nc, HttpStatus.OK);
+        } catch (Exception exception) {
+            // Указываем тип ошибки
+            String error;
+            if (exception.getMessage().contains("ConstraintViolationException")) {
+                error = "artistAlreadyExists";
+            } else {
+                error = exception.getMessage();
+            }
 
-    @PostMapping("/deleteartists")
-    public ResponseEntity deleteArtists(@Validated @RequestBody List<Artists> artists) {
-        artistsRepository.deleteAll(artists);
-        return new ResponseEntity(HttpStatus.OK);
+            Map<String, String> map = new HashMap<>();
+            map.put("error", error + "\n");
+
+            return ResponseEntity.ok(map);
+        }
     }
 
     /**
@@ -100,8 +93,8 @@ public class ArtistsController {
      * @return - возвращает заголовок. Если всё ок, то 200. Иначе будет ошибка
      */
     @PutMapping("/artists/{id}")
-    public ResponseEntity<Artists> updateArtist(@PathVariable(value = "id") Long artistsID,
-                                                @RequestBody Artists artistDetails) {
+    public ResponseEntity<Artists> updateCountry(@PathVariable(value = "id") Long artistsID,
+                                                 @RequestBody Artists artistDetails) {
         Artists artist = null;
         Optional<Artists> cc = artistsRepository.findById(artistsID);
 
@@ -126,7 +119,7 @@ public class ArtistsController {
      * @return - вернёт 200, если всё было ок
      */
     @DeleteMapping("/artists/{id}")
-    public ResponseEntity<Object> deleteArtist(@PathVariable(value = "id") Long artistID) {
+    public ResponseEntity<Object> deleteCountry(@PathVariable(value = "id") Long artistID) {
         Optional<Artists> artists = artistsRepository.findById(artistID);
         Map<String, Boolean> resp = new HashMap<>();
 
