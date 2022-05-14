@@ -32,6 +32,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sample_text" />
 
+    <Button
+        android:id="@+id/backend_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onButtonBackendClick"
+        android:text="Send request to Backend"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sample_text"
+        app:layout_constraintVertical_bias="0.652" />
+
     <TextView
         android:id="@+id/sample_text"
         android:layout_width="wrap_content"
