@@ -8,7 +8,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Fclient">
+        <activity
+            android:name=".TransactionEvents"
+            android:exported="false" />
         <activity
             android:name=".PinpadActivity"
             android:exported="false" />
@@ -22,5 +26,5 @@
             </intent-filter>
         </activity>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
