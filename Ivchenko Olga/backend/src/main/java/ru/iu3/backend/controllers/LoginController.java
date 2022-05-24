@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 // Эту аннотацию надо указать обязательно, поскольку в противном случае будет ошибка из-за политики одного источника
-//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/auth")
 public class LoginController {
