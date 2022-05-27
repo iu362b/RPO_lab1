@@ -24,6 +24,6 @@ public class Country {
     public String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "country")
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Artist> artists = new ArrayList<>();
 }
