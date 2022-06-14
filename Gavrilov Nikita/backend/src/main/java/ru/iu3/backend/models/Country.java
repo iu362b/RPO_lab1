@@ -1,12 +1,15 @@
 package ru.iu3.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "countries")
 @Access(AccessType.FIELD)
 public class Country {
-
     public Country() { }
     public Country(Long id) {
         this.id = id;
@@ -19,4 +22,8 @@ public class Country {
 
     @Column(name = "name", nullable = false, unique = true)
     public String name;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Artist> artists = new ArrayList<>();
 }

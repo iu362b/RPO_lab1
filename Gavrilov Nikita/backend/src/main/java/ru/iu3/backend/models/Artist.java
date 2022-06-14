@@ -1,6 +1,11 @@
 package ru.iu3.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.boot.context.properties.bind.Name;
+import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,6 +36,6 @@ public class Artist {
     public Country country;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "artist")
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Painting> paintings = new ArrayList<>();
 }

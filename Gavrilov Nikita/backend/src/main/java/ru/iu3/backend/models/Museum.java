@@ -29,7 +29,7 @@ public class Museum {
     public String location;
 
     @JsonIgnore
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Painting> paintings = new ArrayList<>();
 
     @JsonIgnore
