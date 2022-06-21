@@ -12,7 +12,7 @@ import java.util.Set;
 public class Museum {
     public Museum() { }
     public Museum(Long id) {
-    this.id = id;
+        this.id = id;
     }
 
     @Id
@@ -20,20 +20,22 @@ public class Museum {
     @Column(name = "id", updatable = false, nullable = false)
     public long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     public String name;
 
     @Column(name = "location", nullable = false)
     public String location;
 
     @JsonIgnore
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Painting> paintings = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "usersmuseums", joinColumns = @JoinColumn(name = "museumid"),
-        inverseJoinColumns = @JoinColumn(name = "userid"))
-    
+    @JoinTable(
+            name = "usersmuseums",
+            joinColumns = @JoinColumn(name = "museumid"),
+            inverseJoinColumns = @JoinColumn(name = "userid")
+    )
     public Set<User> users = new HashSet<>();
 }
